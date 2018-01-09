@@ -25,11 +25,21 @@ exports.yourAction = functions.https.onRequest((request, response) => {
   // Fulfill action business logic
   function responseHandler (app) {
     // Complete your fulfillment logic and send a response
-    app.tell('Hello, World!');
+    var speechStr = "";
+    const uidStr = JSON.stringify(request.body.result.parameters.MakeIncident);
+    var uid = uidStr.replace(/\"/g, "");
+    if (uid === "1") {
+      speechStr = "インシデントを登録します。";
+    } else if (uid === "2") {
+      speechStr = "インシデントは3件です。";
+    } else {
+          speechStr = "該当するグループはありません。";
+    }
+    app.tell(speechStr);
   }
 
   const actionMap = new Map();
-  actionMap.set('input.welcome', responseHandler);
+  actionMap.set('action.sn_response', responseHandler);
 
   app.handleRequest(actionMap);
 });
